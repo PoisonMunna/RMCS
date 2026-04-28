@@ -83,7 +83,7 @@ export default function Lobby({ roomCode, players, currentPlayerId, onReady }) {
                   <div className="flex items-center">
                     {player.isReady ? (
                       <span className="flex items-center gap-1 text-xs font-semibold text-green-400 bg-green-400/10 px-2 py-1 rounded">
-                        <Check className="w-3 h-3" /> Ready ✓
+                        <Check className="w-3 h-3" /> Ready 
                       </span>
                     ) : (
                       <span className="text-xs font-semibold text-slate-400">Not Ready ⏳</span>

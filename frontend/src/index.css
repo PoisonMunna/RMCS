@@ -1,76 +1,129 @@
 @import "tailwindcss";
 
+/* ============================================================
+   RAJA MANTRI CHOR SIPAHI  — Game Design System
+   Deep royal night + neon accent palette
+   ============================================================ */
+
 @theme {
-  --color-raja: #ffd700;
-  --color-mantri: #00ffcc;
-  --color-chor: #ff3366;
-  --color-sipahi: #33ccff;
-  
-  --color-background-start: #0f172a;
-  --color-background-end: #1e1b4b;
+  --color-raja:   #facc15;   /* gold */
+  --color-mantri: #2dd4bf;   /* teal */
+  --color-sipahi: #60a5fa;   /* sky blue */
+  --color-chor:   #f43f5e;   /* crimson */
 }
 
+/* ── Base ─────────────────────────────────────────────────── */
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  background: linear-gradient(135deg, var(--color-background-start), var(--color-background-end));
-  color: white;
+  /* Rich deep space gradient */
+  background: radial-gradient(ellipse at 20% 20%, #1e0048 0%, #0a0020 55%, #00101a 100%);
+  background-attachment: fixed;
+  color: #f0f4ff;
   min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
 }
 
-/* Glassmorphism utilities */
+/* Subtle scanline overlay for a premium "game screen" feel */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.012) 0px,
+    rgba(255,255,255,0.012) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ── Glassmorphism ────────────────────────────────────────── */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), inset 0 0 0 0.5px rgba(255,255,255,0.06);
 }
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 0.5px rgba(255,255,255,0.08),
+    0 0 0 0 rgba(250, 204, 21, 0);
+  transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1),
+              box-shadow 0.35s ease;
 }
 
 .glass-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-6px) scale(1.01);
+  box-shadow:
+    0 20px 60px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 0.5px rgba(255,255,255,0.14),
+    0 0 30px rgba(139, 92, 246, 0.25);
 }
 
-/* Custom animations */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+/* ── Page transition / fade-in ────────────────────────────── */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
 }
 
 .animate-fade-in {
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: fadeInUp 0.55s cubic-bezier(0.34,1.2,0.64,1) both;
 }
 
+/* ── Glow pulse (Raja reveal button) ─────────────────────── */
 .animate-pulse-glow {
-  animation: pulse-glow 2s infinite;
+  animation: pulseGold 2.2s ease-in-out infinite;
 }
 
-@keyframes pulse-glow {
-  0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(255, 215, 0, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+@keyframes pulseGold {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(250, 204, 21, 0.55), 0 6px 28px rgba(250,204,21,0.3); }
+  50%       { box-shadow: 0 0 0 16px rgba(250, 204, 21, 0), 0 6px 42px rgba(250,204,21,0.6); }
 }
 
-/* Typography classes for gradient text */
+/* ── 3D Card Flip ─────────────────────────────────────────── */
+.perspective-1000  { perspective: 1000px; }
+.transform-style-3d { transform-style: preserve-3d; }
+.backface-hidden {
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.rotate-y-180 { transform: rotateY(180deg); }
+
+/* ── Neon text utility ────────────────────────────────────── */
 .text-gradient {
-  background: linear-gradient(to right, #60a5fa, #c084fc);
+  background: linear-gradient(135deg, #a78bfa 0%, #60a5fa 50%, #2dd4bf 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
 .text-gradient-gold {
-  background: linear-gradient(to right, #fde047, #f59e0b);
+  background: linear-gradient(135deg, #fde047 0%, #facc15 50%, #f59e0b 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 8px rgba(250,204,21,0.45));
 }
+
+/* ── Neon border glow utility (used in role cards) ────────── */
+@keyframes borderPulse {
+  0%, 100% { box-shadow: 0 0 10px 2px var(--glow-color, rgba(250,204,21,0.4)); }
+  50%       { box-shadow: 0 0 24px 6px var(--glow-color, rgba(250,204,21,0.7)); }
+}
+
+.neon-glow {
+  animation: borderPulse 3s ease-in-out infinite;
+}
+
+

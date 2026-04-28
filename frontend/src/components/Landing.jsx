@@ -29,7 +29,7 @@ export default function Landing({ onCreateRoom, onJoinRoom }) {
       
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-2 tracking-tight">
-          <span className="text-gradient-gold">Raja </span> 👑 Mantri 🧠<br/>Chor ☠️ <span className="text-gradient">Sipahi </span>🚔
+          <span className="text-gradient-gold">Raja </span> 👑 Mantri 🧠<br/>Chor ☠️ <span className="text-gradient">Sipahi </span>🛡️
         </h1>
         <p className="text-slate-300 text-sm">The classic game of trust, betrayal, and strategy 👀</p>
       </div>
@@ -167,6 +167,16 @@ export default function Landing({ onCreateRoom, onJoinRoom }) {
           </button>
         </form>
       )}
+
+      {/* Footer */}
+      <div className="mt-8 text-center text-slate-400 text-sm border-t border-white/10 pt-6">
+        <p>Made by <span className="text-white font-semibold">PoisonMunna</span> ⭐</p>
+        <div className="flex justify-center gap-4 mt-3">
+          <a href="https://github.com/PoisonMunna" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors font-medium">GitHub</a>
+          <span className="text-slate-600">|</span>
+          <a href="https://linkedin.com/in/mayank-raj-067248341" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors font-medium">LinkedIn</a>
+        </div>
+      </div>
     </div>
   );
 }

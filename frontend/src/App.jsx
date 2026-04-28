@@ -3,6 +3,7 @@ import { io } from 'socket.io-client';
 import Landing from './components/Landing';
 import Lobby from './components/Lobby';
 import Game from './components/Game';
+import EmojiBackground from './components/EmojiBackground';
 
 // Change this in production or use .env file
 const SOCKET_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
@@ -107,12 +108,16 @@ function App() {
   };
 
   const handleNextRound = () => {
+    if (gameState?.isGameOver) {
+      socket.emit('reset_game', { roomCode });
+    }
     setView('lobby');
     setGameState(null);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-4" style={{ position: 'relative', zIndex: 1 }}>
+      <EmojiBackground />
       {view === 'landing' && (
         <Landing 
           onCreateRoom={handleCreateRoom} 

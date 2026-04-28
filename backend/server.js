@@ -216,6 +216,21 @@ io.on('connection', (socket) => {
     processMantriGuess(roomCode, guessedPlayerId);
   });
 
+  socket.on('reset_game', ({ roomCode }) => {
+    const room = rooms[roomCode];
+    if (!room) return;
+    
+    room.currentRound = 0;
+    room.players.forEach(p => {
+      p.score = 0;
+      p.role = null;
+      p.isReady = p.isBot ? true : false;
+    });
+    room.state = 'waiting';
+    
+    io.to(roomCode).emit('room_update', { players: room.players });
+  });
+
   socket.on('disconnect', () => {
     console.log('User disconnected:', socket.id);
     for (const roomCode in rooms) {

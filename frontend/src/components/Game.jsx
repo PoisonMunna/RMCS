@@ -1,4 +1,4 @@
-import { Eye, UserX, Trophy, Shield, Coins, AlertCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
 
 export default function Game({ 
   socket, 
@@ -12,6 +12,41 @@ export default function Game({
 }) {
   const currentPlayer = players.find(p => p.id === currentPlayerId);
   const myRole = currentPlayer?.role?.name;
+  
+  const [isRevealed, setIsRevealed] = useState(false);
+
+  useEffect(() => {
+    if (gameState.phase === 'assigning_roles') {
+      setIsRevealed(false);
+    }
+  }, [gameState.phase]);
+
+  // Audio effects
+  useEffect(() => {
+    if (isRevealed) {
+      new Audio('/sounds/reveal.mp3').play().catch(e => console.log('Audio play failed:', e));
+    }
+  }, [isRevealed]);
+
+  useEffect(() => {
+    if (gameState.phase === 'round_end') {
+      const correct = gameState.lastRoundResult?.correctGuess;
+      
+      if (myRole === 'Mantri') {
+        const sound = correct ? '/sounds/win.mp3' : '/sounds/lose.mp3';
+        new Audio(sound).play().catch(e => console.log('Audio play failed:', e));
+      } else if (myRole === 'Chor') {
+        const sound = correct ? '/sounds/lose.mp3' : '/sounds/win.mp3';
+        new Audio(sound).play().catch(e => console.log('Audio play failed:', e));
+      }
+      
+      if (gameState.isGameOver) {
+        setTimeout(() => {
+          new Audio('/sounds/end.mp3').play().catch(e => console.log('Audio play failed:', e));
+        }, 800);
+      }
+    }
+  }, [gameState.phase, gameState.isGameOver, gameState.lastRoundResult, myRole]);
   
   const raja = players.find(p => p.role?.name === 'Raja');
   const mantri = players.find(p => p.role?.name === 'Mantri');
@@ -31,10 +66,10 @@ export default function Game({
 
   const getRoleIcon = (role) => {
     switch (role) {
-      case 'Raja': return <Trophy className="w-8 h-8 mb-2 mx-auto" />;
-      case 'Mantri': return <Eye className="w-8 h-8 mb-2 mx-auto" />;
-      case 'Sipahi': return <Shield className="w-8 h-8 mb-2 mx-auto" />;
-      case 'Chor': return <UserX className="w-8 h-8 mb-2 mx-auto" />;
+      case 'Raja': return <div className="text-5xl mb-2 mx-auto">👑</div>;
+      case 'Mantri': return <div className="text-5xl mb-2 mx-auto">🧠</div>;
+      case 'Sipahi': return <div className="text-5xl mb-2 mx-auto">🛡️</div>;
+      case 'Chor': return <div className="text-5xl mb-2 mx-auto">☠️</div>;
       default: return null;
     }
   };
@@ -45,24 +80,49 @@ export default function Game({
       {/* Main Game Area */}
       <div className="lg:col-span-2 space-y-6">
         {/* My Role Card */}
-        <div className={`glass-card rounded-3xl p-8 text-center border-2 transition-all duration-500 ${gameState.phase !== 'round_end' ? getRoleColor(myRole).split(' ')[1] : 'border-white/10'}`}>
-          <h2 className="text-xl text-slate-300 mb-2 font-medium">Your Role</h2>
-          <div className={`inline-block p-6 rounded-2xl ${getRoleColor(myRole)} mb-4`}>
-            {getRoleIcon(myRole)}
-            <h1 className="text-4xl font-black uppercase tracking-widest">{myRole}</h1>
+        <div className="perspective-1000 max-w-sm mx-auto w-full">
+          <div className={`relative w-full transition-transform duration-1000 transform-style-3d ${isRevealed ? 'rotate-y-180' : ''}`}>
+            
+            {/* Front of Card (Unrevealed State) */}
+            <div 
+              onClick={() => setIsRevealed(true)}
+              className={`absolute inset-0 w-full h-full backface-hidden glass-card rounded-3xl p-8 flex flex-col items-center justify-center border-2 border-white/10 z-10 cursor-pointer hover:border-yellow-400/30 hover:shadow-[0_0_20px_rgba(250,204,21,0.2)] transition-all group ${isRevealed ? 'pointer-events-none' : ''}`}
+            >
+              <div className="text-7xl mb-6 animate-pulse group-hover:scale-110 transition-transform duration-300">❓</div>
+              <h2 className="text-2xl font-black text-white tracking-widest uppercase group-hover:text-yellow-400 transition-colors">Secret Card</h2>
+              <p className="text-slate-400 mt-2 text-sm font-medium">Click to reveal...</p>
+            </div>
+
+            {/* Back of Card (Revealed Role) */}
+            <div className={`backface-hidden rotate-y-180 bg-white/10 backdrop-blur-md shadow-xl rounded-3xl p-8 text-center border-2 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center min-h-[420px] ${gameState.phase !== 'round_end' ? getRoleColor(myRole).split(' ')[1] : 'border-white/10'}`}>
+              <h2 className="text-xl text-slate-300 mb-2 font-medium">Your Are</h2> 
+              <div className={`inline-block p-6 rounded-2xl ${getRoleColor(myRole)} mb-4`}>
+                {getRoleIcon(myRole)}
+                <h1 className="text-4xl font-black uppercase tracking-widest">{myRole}</h1>
+              </div>
+              <p className="text-slate-400 text-sm">
+                {myRole === 'Raja' && "You are the King. Reveal yourself to start the investigation."}
+                {myRole === 'Mantri' && "You are the Minister. Find the thief once the King reveals."}
+                {myRole === 'Sipahi' && "You are the Soldier. Stand by and protect the kingdom."}
+                {myRole === 'Chor' && "You are the Thief. Don't get caught by the Minister!"}
+              </p>
+            </div>
+            
           </div>
-          <p className="text-slate-400 text-sm">
-            {myRole === 'Raja' && "You are the King. Reveal yourself to start the investigation."}
-            {myRole === 'Mantri' && "You are the Minister. Find the thief once the King reveals."}
-            {myRole === 'Sipahi' && "You are the Soldier. Stand by and protect the kingdom."}
-            {myRole === 'Chor' && "You are the Thief. Don't get caught by the Minister!"}
-          </p>
         </div>
 
         {/* Action Area */}
         <div className="glass-card rounded-3xl p-6 min-h-[250px] flex flex-col items-center justify-center relative overflow-hidden">
           
-          {gameState.phase === 'assigning_roles' && (
+          {!isRevealed ? (
+            <div className="text-center animate-pulse">
+              <div className="text-5xl mb-4">👆</div>
+              <h3 className="text-2xl font-bold text-slate-300 mb-2">Reveal your role!</h3>
+              <p className="text-slate-500 text-lg">Click the card above to see who you are</p>
+            </div>
+          ) : (
+            <>
+              {gameState.phase === 'assigning_roles' && (
             <div className="text-center animate-fade-in">
               <div className="w-16 h-16 border-4 border-t-amber-500 border-amber-500/30 rounded-full animate-spin mx-auto mb-4"></div>
               <h3 className="text-xl font-bold text-white mb-2">Roles Assigned!</h3>
@@ -71,10 +131,10 @@ export default function Game({
                   onClick={onRevealRaja}
                   className="mt-4 bg-gradient-to-r from-yellow-400 to-amber-600 hover:from-yellow-300 hover:to-amber-500 text-black font-bold py-4 px-8 rounded-full text-xl shadow-[0_0_20px_rgba(251,191,36,0.4)] transition-all transform hover:scale-105 animate-pulse-glow"
                 >
-                  I am the Raja (Reveal)
+                  I am the Raja 👑 (Reveal)
                 </button>
               ) : (
-                <p className="text-slate-400 text-lg">Waiting for Raja to reveal...</p>
+                <p className="text-slate-400 text-lg">Waiting for Raja 👑 to reveal...</p>
               )}
             </div>
           )}
@@ -83,17 +143,17 @@ export default function Game({
             <div className="w-full animate-fade-in text-center">
               <div className="mb-6">
                 <span className="inline-block px-4 py-1 bg-yellow-400/20 text-yellow-400 rounded-full text-sm font-bold border border-yellow-400/30 mb-2">
-                  <Trophy className="w-4 h-4 inline mr-1 -mt-1" /> Raja Revealed
+                  <span className="inline-block mr-1">👑</span> Raja Revealed
                 </span>
                 <p className="text-white text-lg">
-                  <span className="font-bold text-yellow-400">{raja?.name}</span> is the Raja!
+                  <span className="font-bold text-yellow-400">{raja?.name}</span> is the Raja 👑!
                 </p>
               </div>
 
               {myRole === 'Mantri' ? (
                 <div className="space-y-4">
                   <h3 className="text-xl font-bold text-teal-400 flex items-center justify-center gap-2">
-                    <Eye className="w-6 h-6" /> Who is the Chor?
+                    <span className="text-2xl">🧠</span> Who is the Chor?
                   </h3>
                   <div className="flex flex-wrap justify-center gap-4">
                     {players
@@ -112,7 +172,7 @@ export default function Game({
               ) : (
                 <div className="text-center">
                   <p className="text-slate-300 text-lg flex items-center justify-center gap-2">
-                    <AlertCircle className="w-5 h-5 text-teal-400" />
+                    <span className="text-xl">⏳</span>
                     Waiting for Mantri (<span className="text-teal-400 font-bold">{mantri?.name}</span>) to guess...
                   </p>
                 </div>
@@ -124,7 +184,7 @@ export default function Game({
             <div className="text-center animate-fade-in w-full">
               {gameState.isGameOver ? (
                 <div className="mb-8">
-                  <Trophy className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+                  <div className="text-6xl mx-auto mb-4">🏆</div>
                   <h2 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-amber-600 mb-2">
                     GAME OVER!
                   </h2>
@@ -154,6 +214,9 @@ export default function Game({
             </div>
           )}
 
+            </>
+          )}
+
         </div>
       </div>
 
@@ -161,7 +224,7 @@ export default function Game({
       <div className="lg:col-span-1">
         <div className="glass-card rounded-3xl p-6 h-full flex flex-col">
           <div className="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-            <Coins className="w-6 h-6 text-amber-400" />
+            <span className="text-2xl">🪙</span>
             <h3 className="text-2xl font-bold text-white">Leaderboard</h3>
           </div>
           
