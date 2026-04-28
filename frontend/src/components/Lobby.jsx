@@ -20,13 +20,13 @@ export default function Lobby({ roomCode, players, currentPlayerId, onReady }) {
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
-          <h2 className="text-3xl font-bold text-white mb-2">Waiting Room</h2>
-          <p className="text-slate-300">Share this code with your friends</p>
+          <h2 className="text-3xl font-bold text-white mb-2">Waiting Room 👀</h2> 
+          <p className="text-slate-300">Share this code with your friends 👥</p>
         </div>
         
         <div className="bg-black/30 rounded-2xl p-4 flex items-center gap-4 border border-white/10">
           <div className="text-center">
-            <span className="text-xs text-slate-400 uppercase tracking-wider block mb-1">Room Code</span>
+            <span className="text-xs text-slate-400 uppercase tracking-wider block mb-1">Room Code 🔐</span>
             <span className="text-2xl font-mono font-bold tracking-[0.2em] text-white">{roomCode}</span>
           </div>
           <button 
@@ -43,7 +43,7 @@ export default function Lobby({ roomCode, players, currentPlayerId, onReady }) {
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-semibold flex items-center gap-2">
             <Users className="w-5 h-5 text-blue-400" />
-            Players Joined
+            Players Joined 
           </h3>
           <span className="px-3 py-1 bg-black/40 rounded-full text-sm font-medium">
             <span className={players.length === 4 ? "text-green-400" : "text-amber-400"}>{players.length}</span> / 4
@@ -83,10 +83,10 @@ export default function Lobby({ roomCode, players, currentPlayerId, onReady }) {
                   <div className="flex items-center">
                     {player.isReady ? (
                       <span className="flex items-center gap-1 text-xs font-semibold text-green-400 bg-green-400/10 px-2 py-1 rounded">
-                        <Check className="w-3 h-3" /> Ready
+                        <Check className="w-3 h-3" /> Ready ✓
                       </span>
                     ) : (
-                      <span className="text-xs font-semibold text-slate-400">Not Ready</span>
+                      <span className="text-xs font-semibold text-slate-400">Not Ready ⏳</span>
                     )}
                   </div>
                 )}
@@ -111,8 +111,8 @@ export default function Lobby({ roomCode, players, currentPlayerId, onReady }) {
           {isReady 
             ? `Waiting for others (${readyCount}/4 Ready)` 
             : players.length === 4 
-              ? 'I am Ready!' 
-              : 'Waiting for 4 players to join...'}
+              ? 'I am Ready! 🎮' 
+              : 'Waiting for 4 players to join... ⏳'}
         </button>
       </div>
     </div>

@@ -7,10 +7,14 @@ const cors = require('cors');
 const app = express();
 app.use(cors());
 
+app.get('/', (req, res) => {
+  res.send('RMCS Backend is running!');
+});
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || "*",
+    origin: (origin, callback) => callback(null, true), // Allow all origins safely
     methods: ["GET", "POST"]
   }
 });

@@ -29,9 +29,9 @@ export default function Landing({ onCreateRoom, onJoinRoom }) {
       
       <div className="text-center mb-8">
         <h1 className="text-4xl font-bold mb-2 tracking-tight">
-          <span className="text-gradient-gold">Raja</span> Mantri<br/>Chor <span className="text-gradient">Sipahi</span>
+          <span className="text-gradient-gold">Raja </span> 👑 Mantri 🧠<br/>Chor ☠️ <span className="text-gradient">Sipahi </span>🚔
         </h1>
-        <p className="text-slate-300 text-sm">The classic game of deceit and deduction.</p>
+        <p className="text-slate-300 text-sm">The classic game of trust, betrayal, and strategy 👀</p>
       </div>
 
       {mode === 'initial' && (
@@ -114,14 +114,14 @@ export default function Landing({ onCreateRoom, onJoinRoom }) {
             type="submit"
             className="w-full bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-orange-500/30 transition-all"
           >
-            Create Game
+            Create Game 🎮
           </button>
           <button 
             type="button"
             onClick={() => setMode('initial')}
             className="w-full text-slate-400 hover:text-white text-sm py-2 transition-colors"
           >
-            Back
+            Back 🔙
           </button>
         </form>
       )}
@@ -156,14 +156,14 @@ export default function Landing({ onCreateRoom, onJoinRoom }) {
             type="submit"
             className="w-full bg-gradient-to-r from-purple-500 to-blue-600 text-white font-bold py-3 px-4 rounded-xl shadow-lg hover:shadow-purple-500/30 transition-all"
           >
-            Join Game
+            Join Game 🤝
           </button>
           <button 
             type="button"
             onClick={() => setMode('initial')}
             className="w-full text-slate-400 hover:text-white text-sm py-2 transition-colors"
           >
-            Back
+            Back 🔙
           </button>
         </form>
       )}
