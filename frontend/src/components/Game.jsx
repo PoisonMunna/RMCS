@@ -199,7 +199,7 @@ export default function Game({
                       {gameState.lastRoundResult.correctGuess ? "Sipahi Guessed Correctly! 🛡️" : "Sipahi Guessed Wrong! ☠️"}
                     </h3>
                     <p className="text-slate-300 mt-2">
-                      Sipahi chose {gameState.lastRoundResult.guessedPlayerName}. {gameState.lastRoundResult.correctGuess ? "CHOR WIN !" : "CHOR LOSS !"}
+                      Sipahi chose {gameState.lastRoundResult.guessedPlayerName}. {gameState.lastRoundResult.correctGuess ? "CHOR ESCAPED !" : "CHOR ARRESTED !"}
                     </p>
                   </div>
                 </>
