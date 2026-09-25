@@ -103,8 +103,8 @@ function App() {
     socket.emit('reveal_raja', { roomCode });
   };
 
-  const handleMantriGuess = (guessedPlayerId) => {
-    socket.emit('mantri_guess', { roomCode, guessedPlayerId });
+  const handleSipahiGuess = (guessedPlayerId) => {
+    socket.emit('sipahi_guess', { roomCode, guessedPlayerId });
   };
 
   const handleNextRound = () => {
@@ -142,7 +142,7 @@ function App() {
           currentPlayerId={socket?.id}
           gameState={gameState}
           onRevealRaja={handleRevealRaja}
-          onMantriGuess={handleMantriGuess}
+          onSipahiGuess={handleSipahiGuess}
           onNextRound={handleNextRound}
         />
       )}
