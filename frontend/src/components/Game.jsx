@@ -7,7 +7,7 @@ export default function Game({
   currentPlayerId, 
   gameState, 
   onRevealRaja, 
-  onMantriGuess, 
+  onSipahiGuess, 
   onNextRound 
 }) {
   const currentPlayer = players.find(p => p.id === currentPlayerId);
@@ -32,7 +32,7 @@ export default function Game({
     if (gameState.phase === 'round_end') {
       const correct = gameState.lastRoundResult?.correctGuess;
       
-      if (myRole === 'Mantri') {
+      if (myRole === 'Sipahi') {
         const sound = correct ? '/sounds/win.mp3' : '/sounds/lose.mp3';
         new Audio(sound).play().catch(e => console.log('Audio play failed:', e));
       } else if (myRole === 'Chor') {
@@ -49,7 +49,7 @@ export default function Game({
   }, [gameState.phase, gameState.isGameOver, gameState.lastRoundResult, myRole]);
   
   const raja = players.find(p => p.role?.name === 'Raja');
-  const mantri = players.find(p => p.role?.name === 'Mantri');
+  const sipahi = players.find(p => p.role?.name === 'Sipahi');
 
   // Sorted players for leaderboard
   const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
@@ -95,16 +95,16 @@ export default function Game({
 
             {/* Back of Card (Revealed Role) */}
             <div className={`backface-hidden rotate-y-180 bg-white/10 backdrop-blur-md shadow-xl rounded-3xl p-8 text-center border-2 transition-all duration-300 hover:-translate-y-1.5 hover:shadow-[0_10px_40px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center min-h-[420px] ${gameState.phase !== 'round_end' ? getRoleColor(myRole).split(' ')[1] : 'border-white/10'}`}>
-              <h2 className="text-xl text-slate-300 mb-2 font-medium">Your Are</h2> 
+              <h2 className="text-xl text-slate-300 mb-2 font-medium">You Are</h2> 
               <div className={`inline-block p-6 rounded-2xl ${getRoleColor(myRole)} mb-4`}>
                 {getRoleIcon(myRole)}
                 <h1 className="text-4xl font-black uppercase tracking-widest">{myRole}</h1>
               </div>
               <p className="text-slate-400 text-sm">
                 {myRole === 'Raja' && "You are the King. Reveal yourself to start the investigation."}
-                {myRole === 'Mantri' && "You are the Minister. Find the thief once the King reveals."}
-                {myRole === 'Sipahi' && "You are the Soldier. Stand by and protect the kingdom."}
-                {myRole === 'Chor' && "You are the Thief. Don't get caught by the Minister!"}
+                {myRole === 'Mantri' && "You are the Minister. You get 800 points for your wisdom."}
+                {myRole === 'Sipahi' && "You are the Soldier. Find the Thief between the remaining hidden players!"}
+                {myRole === 'Chor' && "You are the Thief. Try to trick the Soldier into guessing wrong!"}
               </p>
             </div>
             
@@ -150,10 +150,10 @@ export default function Game({
                 </p>
               </div>
 
-              {myRole === 'Mantri' ? (
+              {myRole === 'Sipahi' ? (
                 <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-teal-400 flex items-center justify-center gap-2">
-                    <span className="text-2xl">🧠</span> Who is the Chor?
+                  <h3 className="text-xl font-bold text-blue-400 flex items-center justify-center gap-2">
+                    <span className="text-2xl">🛡️</span> Who is the Chor?
                   </h3>
                   <div className="flex flex-wrap justify-center gap-4">
                     {players
@@ -161,7 +161,7 @@ export default function Game({
                       .map(p => (
                         <button
                           key={p.id}
-                          onClick={() => onMantriGuess(p.id)}
+                          onClick={() => onSipahiGuess(p.id)}
                           className="bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-4 rounded-xl text-lg font-medium transition-all hover:scale-105"
                         >
                           Is <span className="font-bold text-white">{p.name}</span> the Chor?
@@ -173,7 +173,7 @@ export default function Game({
                 <div className="text-center">
                   <p className="text-slate-300 text-lg flex items-center justify-center gap-2">
                     <span className="text-xl">⏳</span>
-                    Waiting for Mantri (<span className="text-teal-400 font-bold">{mantri?.name}</span>) to guess...
+                    Waiting for Sipahi (<span className="text-blue-400 font-bold">{sipahi?.name}</span>) to guess...
                   </p>
                 </div>
               )}
@@ -196,10 +196,10 @@ export default function Game({
                 <>
                   <div className={`inline-block p-4 rounded-2xl mb-6 border ${gameState.lastRoundResult.correctGuess ? 'bg-green-500/10 border-green-500/30' : 'bg-red-500/10 border-red-500/30'}`}>
                     <h3 className={`text-2xl font-bold ${gameState.lastRoundResult.correctGuess ? 'text-green-400' : 'text-red-400'}`}>
-                      {gameState.lastRoundResult.correctGuess ? "Mantri Guessed Correctly!" : "Mantri Guessed Wrong!"}
+                      {gameState.lastRoundResult.correctGuess ? "Sipahi Guessed Correctly! 🛡️" : "Sipahi Guessed Wrong! ☠️"}
                     </h3>
                     <p className="text-slate-300 mt-2">
-                      Mantri chose {gameState.lastRoundResult.guessedPlayerName}.
+                      Sipahi chose {gameState.lastRoundResult.guessedPlayerName}. {gameState.lastRoundResult.correctGuess ? "Sipahi kept their 500 points!" : "Chor stole Sipahi's 500 points!"}
                     </p>
                   </div>
                 </>
