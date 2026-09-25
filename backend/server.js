@@ -28,30 +28,29 @@ const ROLES = [
   { name: 'Sipahi', points: 500 }
 ];
 
-const processMantriGuess = (roomCode, guessedPlayerId) => {
+const processSipahiGuess = (roomCode, guessedPlayerId) => {
   const room = rooms[roomCode];
   if (!room) return;
 
-  const mantri = room.players.find(p => p.role?.name === 'Mantri');
+  const sipahi = room.players.find(p => p.role?.name === 'Sipahi');
   const chor = room.players.find(p => p.role?.name === 'Chor');
+  const mantri = room.players.find(p => p.role?.name === 'Mantri');
+  const raja = room.players.find(p => p.role?.name === 'Raja');
   const guessedPlayer = room.players.find(p => p.id === guessedPlayerId);
 
-  if (!mantri || !chor || !guessedPlayer) return;
+  if (!sipahi || !chor || !guessedPlayer) return;
 
   let correctGuess = false;
 
   if (guessedPlayer.role.name === 'Chor') {
-    mantri.score += 800;
+    sipahi.score += 500;
     correctGuess = true;
   } else {
-    chor.score += 800;
+    chor.score += 500;
   }
 
-  const raja = room.players.find(p => p.role?.name === 'Raja');
-  const sipahi = room.players.find(p => p.role?.name === 'Sipahi');
-  
   if (raja) raja.score += 1000;
-  if (sipahi) sipahi.score += 500;
+  if (mantri) mantri.score += 800;
 
   room.currentRound = (room.currentRound || 0) + 1;
   room.state = 'waiting';
@@ -78,20 +77,20 @@ const processMantriGuess = (roomCode, guessedPlayerId) => {
   });
 };
 
-const handleBotMantri = (roomCode) => {
+const handleBotSipahi = (roomCode) => {
   const room = rooms[roomCode];
   if (!room) return;
 
-  const mantri = room.players.find(p => p.role?.name === 'Mantri');
-  if (mantri && mantri.isBot) {
+  const sipahi = room.players.find(p => p.role?.name === 'Sipahi');
+  if (sipahi && sipahi.isBot) {
     setTimeout(() => {
       const currentRoom = rooms[roomCode];
       if (!currentRoom || currentRoom.state !== 'playing' || !currentRoom.rajaRevealed) return;
 
-      const validTargets = currentRoom.players.filter(p => p.role?.name !== 'Raja' && p.role?.name !== 'Mantri');
+      const validTargets = currentRoom.players.filter(p => p.role?.name !== 'Raja' && p.role?.name !== 'Sipahi');
       if (validTargets.length > 0) {
         const randomTarget = validTargets[Math.floor(Math.random() * validTargets.length)];
-        processMantriGuess(roomCode, randomTarget.id);
+        processSipahiGuess(roomCode, randomTarget.id);
       }
     }, 3000);
   }
@@ -194,7 +193,7 @@ io.on('connection', (socket) => {
             if (currentRoom && currentRoom.state === 'playing' && !currentRoom.rajaRevealed) {
               currentRoom.rajaRevealed = true;
               io.to(roomCode).emit('raja_revealed');
-              handleBotMantri(roomCode);
+              handleBotSipahi(roomCode);
             }
           }, 2000);
         }
@@ -209,11 +208,11 @@ io.on('connection', (socket) => {
     room.rajaRevealed = true;
     io.to(roomCode).emit('raja_revealed');
     
-    handleBotMantri(roomCode);
+    handleBotSipahi(roomCode);
   });
 
-  socket.on('mantri_guess', ({ roomCode, guessedPlayerId }) => {
-    processMantriGuess(roomCode, guessedPlayerId);
+  socket.on('sipahi_guess', ({ roomCode, guessedPlayerId }) => {
+    processSipahiGuess(roomCode, guessedPlayerId);
   });
 
   socket.on('reset_game', ({ roomCode }) => {
