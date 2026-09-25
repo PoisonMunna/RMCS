@@ -9,16 +9,16 @@ A real-time multiplayer web adaptation of the classic Indian childhood guessing 
 The game requires 4 players (you can add AI bots if you don't have enough human players). Each round, roles are secretly distributed among the players:
 
 - **👑 Raja (King):** Gets 1000 points. The Raja must reveal themselves to start the round.
-- **🧠 Mantri (Minister):** Gets 800 points *if* they guess correctly. Their job is to find the Chor.
-- **🛡️ Sipahi (Soldier):** Gets 500 points. A loyal protector.
-- **☠️ Chor (Thief):** Gets 0 points. Tries to evade being caught by the Mantri.
+- **🧠 Mantri (Minister):** Gets 800 points for their wise council.
+- **🛡️ Sipahi (Soldier):** Gets 500 points *if* they guess the Chor correctly between the hidden players (Mantri and Chor).
+- **☠️ Chor (Thief):** Gets 0 points unless the Sipahi guesses wrong, in which case the Chor steals the Sipahi's 500 points!
 
 **The Flow:**
 1. Roles are secretly assigned.
 2. Players click their cards to reveal their secret role (with a cool 3D flip animation).
 3. The **Raja** reveals themselves to the lobby.
-4. The **Mantri** must then guess who the **Chor** is from the remaining hidden players.
-5. If the Mantri is correct, they get 800 points. If wrong, the Chor gets the 800 points!
+4. The **Sipahi** (Soldier) must then guess who the **Chor** is from the remaining hidden players (Mantri & Chor).
+5. If the Sipahi is correct, they get 500 points. If wrong, the Chor steals the Sipahi's 500 points!
 6. Play continues until the custom win condition (target points or max rounds) is reached.
 
 ---
